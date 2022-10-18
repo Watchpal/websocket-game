@@ -200,13 +200,13 @@ function init(e) {
     else if(idset % 2 === 0){
       //console.log(gameState.player2.snake[0].x);
       //console.log(state);  
-      initGameLogic2(gameState);}
+      initGameLogic2(gameState);
       //console.log(gameState.player2.snake[0].x);
       let message2 = { first: gameState.player2};
       // console.log(message2);
       // console.log(message2.first);
       websocket.send(JSON.stringify({ type: "gameLogic2", payload: message2 }));
-    
+    }
   }
 
 
