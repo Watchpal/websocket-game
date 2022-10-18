@@ -109,30 +109,6 @@ wss.on("connection", (ws, client) => {
           
 
     }
-    //state = JSON.parse(data);
-    //console.log(`Received message ${data} from user ${client}`);
-    
-    
-    
-    
-
-    //if(state.player.newHead.x < 0 || state.player.newHead.x > 20 || state.player.newHead.y < 0 || state.player.newHead.y > 20 || (state.player.d != null && collision(state.player.newHead,state.player.snake))){
-   //     clearInterval(game);
-        
-    //}
-   
-   // function collision(head,array){
-     // for(let i = 0; i < array.length; i++){
-       //   if(head.x == array[i].x && head.y == array[i].y){
-         //     return true;
-          //}
-      //}
-        //return false;
-      //}
-   // wss.clients.forEach(function each(client) {
-      //if (client !== ws && client.readyState === WebSocket.OPEN) {
-      //  client.send(data, { binary: isBinary });
-    //startGameLoop(state);
   });
 
   

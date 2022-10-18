@@ -7,7 +7,10 @@ function init(e) {
   const ctx = canvas.getContext("2d");
   console.log('This is the context', ctx);
   
-  const websocket = new WebSocket("ws://localhost:8080");
+  const trimSlashes = str => str.split('/').filter(v => v != '').join('/');
+  const baseURL = trimSlashes(window.location.href.split("//")[1]);
+  const protocol = window.location.protocol.includes('https') ? 'wss': 'ws'
+  const websocket = new WebSocket(`${protocol}://${location.host}`);
 
   const size = 25;
   let idset;
@@ -126,13 +129,7 @@ function init(e) {
         x : posX,
         y : posY
     }
-    //console.log(gameState.player1.newHead);
     
-    
-    // if(posX < 0 || posX > 20 || posY < 0 || posY > 20 || collision(state.player1.newHead,state.player1.snake) || collision(state.player1.newHead,state.player2.snake)){
-    //   websocket.send(JSON.stringify({ type: "end"}));
-        
-    // }
     
     gameState.player1.snake.unshift(gameState.player1.newHead);
   }
@@ -169,14 +166,7 @@ function init(e) {
         x : posX,
         y : posY
     }
-    //console.log(posX);
-    //console.log(posY);
-    
-    
-    // if(posX < 0 || posX > 19 || posY < 0 || posY > 19 || collision(state.player2.newHead,state.player2.snake) || collision(state.player2.newHead,state.player1.snake)){
-        
-    //   websocket.send(JSON.stringify({ type: "end"}));
-    // }
+   
     
     gameState.player2.snake.unshift(gameState.player2.newHead);
   }
