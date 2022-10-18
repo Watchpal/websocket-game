@@ -7,9 +7,7 @@ function init(e) {
   const ctx = canvas.getContext("2d");
   console.log('This is the context', ctx);
   
-  const trimSlashes = str => str.split('/').filter(v => v != '').join('/');
-  const baseURL = trimSlashes(window.location.href.split("//")[1]);
-  let HOST = location.origin.replace(/^http/, 'wss')
+  let HOST = location.origin.replace(/^http/, 'ws')
   let websocket = new WebSocket(HOST);
 
   const size = 25;
