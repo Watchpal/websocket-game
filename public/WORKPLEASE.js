@@ -7,12 +7,11 @@ function init(e) {
   const ctx = canvas.getContext("2d");
   console.log('This is the context', ctx);
   
-  const protocol = window.location.protocol.includes('https') ? 'wss': 'ws'
-  const websocket = new WebSocket(`${protocol}://localhost:8080`);
+  const websocket = new WebSocket("ws://localhost:8080");
 
   const size = 25;
   let idset;
-
+  let i = 1;
   let gameState = {
     player1: {
       newHead:  {
@@ -99,8 +98,8 @@ function init(e) {
   function initGameLogic1(state){
     let posX = state.player1.snake[0].x;
     let posY = state.player1.snake[0].y;
-    console.log(posX);
-    console.log(posY);
+    //console.log(posX);
+    //console.log(posY);
     
     if( state.player1.d === "LEFT") posX -= 1;
     if( state.player1.d === "UP") posY -= 1;
@@ -120,14 +119,14 @@ function init(e) {
         gameState.player1.snake.pop();
     }
     
-    console.log(posX);
-    console.log(posY);
+    //console.log(posX);
+    //console.log(posY);
     
     gameState.player1.newHead = {
         x : posX,
         y : posY
     }
-    console.log(gameState.player1.newHead);
+    //console.log(gameState.player1.newHead);
     
     
     // if(posX < 0 || posX > 20 || posY < 0 || posY > 20 || collision(state.player1.newHead,state.player1.snake) || collision(state.player1.newHead,state.player2.snake)){
@@ -142,7 +141,9 @@ function init(e) {
     let posX = state.player2.snake[0].x;
     let posY = state.player2.snake[0].y;
     //console.log(posX);
-    
+    //console.log(posX);
+    //console.log(posY);
+
     if( state.player2.d == "LEFT") posX -= 1;
     if( state.player2.d == "UP") posY -= 1;
     if( state.player2.d == "RIGHT") posX += 1;
@@ -161,13 +162,15 @@ function init(e) {
         gameState.player2.snake.pop();
     }
     
-    
+    //console.log(posX);
+    //console.log(posY);
     
     gameState.player2.newHead = {
         x : posX,
         y : posY
     }
-    
+    //console.log(posX);
+    //console.log(posY);
     
     
     // if(posX < 0 || posX > 19 || posY < 0 || posY > 19 || collision(state.player2.newHead,state.player2.snake) || collision(state.player2.newHead,state.player1.snake)){
@@ -189,6 +192,8 @@ function init(e) {
         ctx.fillStyle = "green";
         ctx.fillRect(state.player1.snake[i].x * size, state.player1.snake[i].y * size,size,size);
     }
+    //console.log(state.player2);
+    
     for( let i = 0; i < state.player2.snake.length ; i++){
       ctx.fillStyle = "red";
       ctx.fillRect(state.player2.snake[i].x * size, state.player2.snake[i].y * size,size,size);
@@ -197,13 +202,21 @@ function init(e) {
     ctx.fillRect(state.food.x * size, state.food.y * size, size, size);
     //console.log(state.player.d);
     if(idset % 2 != 0) {
+      //console.log(gameState.player1.snake[0].x);
       initGameLogic1(gameState);
       let message1 = { first: gameState.player1}; 
+      console.log(gameState.player1.snake[0].x);
+      console.log(gameState.player2.snake[0].x);
       websocket.send(JSON.stringify({ type: "gameLogic1", payload: message1 }))
     }
-    else if(idset % 2 === 0){  
+    else if(idset % 2 === 0){
+      //console.log(gameState.player2.snake[0].x);
+      //console.log(state);  
       initGameLogic2(gameState);}
-      let message2 = { first: gameState.player2}; 
+      //console.log(gameState.player2.snake[0].x);
+      let message2 = { first: gameState.player2};
+      // console.log(message2);
+      // console.log(message2.first);
       websocket.send(JSON.stringify({ type: "gameLogic2", payload: message2 }));
     
   }
@@ -219,19 +232,25 @@ function init(e) {
   };
   const handleSocketMessage = (state) => {
     
-  let gameOfState = JSON.parse(state.data);
+  let info = JSON.parse(state.data);
 
-    switch(gameOfState.type){ 
+    switch(info.type){ 
       case "id":
-        idset = gameOfState.payload;
+        idset = info.payload;
         console.log(idset);
-        draw(gameState);
+        //draw(gameState);
         break;
-      default:
-        initSnakeControl();
+      case "stateInfo":
+        let gameOfState = info.payload;
+        
+        if(i === 1){
+          initSnakeControl();
+          i++;
+        }
+        
         gameState.food = gameOfState.food; 
         draw(gameOfState);
-
+        //console.log(gameOfState);
     }
 
 

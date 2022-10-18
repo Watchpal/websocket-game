@@ -1,13 +1,18 @@
-const express = require('express');
-const { createServer } = require('http');
-const WebSocket = require('ws');
+import express from "express";
+
+
+import http from "http";
+
+import { WebSocketServer } from "ws";
+
 
 const app = express();
+app.use(express.static("public"));
 
-const server = createServer(app);
+const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ server });
-
+const wss = new WebSocketServer({ noServer: true });
+let i = 1;
 let game;
 let state = {
   player1: {
@@ -42,15 +47,37 @@ let state = {
 
 let idset = 1;
 
+// upgrade event - websocket communication
+server.on("upgrade", (req, socket, head) => {
+  console.log("Upgrade event client: ", req.headers);
+
+  // use authentication - only logged in users allowed ?
+  // socket.write('HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Basic\r\n\r\n');
+  // socket.destroy();
+  // return;
+
+  // start websocket
+  wss.handleUpgrade(req, socket, head, (ws) => {
+      console.log("let user use websocket...");
+
+       wss.emit("connection", ws, req);
+  });
+});
+
 wss.on("connection", (ws, client) => {
   console.log(`Client connected from IP ${ws._socket.remoteAddress}`);
   console.log(`Number of connected clients: ${wss.clients.size}`);
-  if(wss.clients.size % 2 === 0) {game = setInterval(sendInfo,1000);}
+  
   
   ws.id = idset;
   idset++;
   wss.clients.forEach(function each(client) {
     client.send(JSON.stringify({ type: "id", payload: client.id }));
+
+    if(wss.clients.size % 2 === 0 && wss.clients.size != 0 && i === 1) {
+      game = setInterval(sendInfo,1000);
+      i++;
+      }
 });
 
   ws.on("close", () => {
@@ -60,22 +87,24 @@ wss.on("connection", (ws, client) => {
   
 
   ws.on("message", (data) => {
+    //console.log(state.player2.snake[0].x);
     let message = JSON.parse(data);
     switch(message.type){
       case "gameLogic1":
         let initGameLogic1 = message.payload;
         state.player1 = initGameLogic1.first;
         break;
-        case "gameLogic2":
-          let initGameLogic2 = message.payload;
-          state.player2 = initGameLogic2.first;
-          break;
-        case "sendFood":
-          let newFood = message.payload;
-          state.food = newFood;
-          break;
+      case "gameLogic2":
+        let initGameLogic2 = message.payload;
+        state.player2 = initGameLogic2.first;
+        break;
+      case "sendFood":
+        let newFood = message.payload;
+        state.food = newFood;
+        break;
         case "end":
           clearInterval(game);
+          i = 1;
           break;
           
 
@@ -114,10 +143,10 @@ wss.on("connection", (ws, client) => {
 
 })
 function sendInfo() {
-  //console.log(state);
-  wss.clients.forEach((client) => client.send(JSON.stringify(state)));
+  //console.log(state.player2.snake[0].x);
+  wss.clients.forEach((client) => client.send(JSON.stringify({ type: "stateInfo", payload: state })));
 }
 
-server.listen(8080, function () {
-  console.log('Listening on http://0.0.0.0:8080');
+server.listen(process.env.PORT || 8080, () => {
+  console.log(`Server started on port ${server.address().port} :)`);
 });
