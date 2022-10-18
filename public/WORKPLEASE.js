@@ -9,8 +9,8 @@ function init(e) {
   
   const trimSlashes = str => str.split('/').filter(v => v != '').join('/');
   const baseURL = trimSlashes(window.location.href.split("//")[1]);
-  const protocol = window.location.protocol.includes('https') ? 'wss': 'ws'
-  const websocket = new WebSocket(`${protocol}://${location.host}`);
+  let HOST = location.origin.replace(/^http/, 'wss')
+  let websocket = new WebSocket(HOST);
 
   const size = 25;
   let idset;
