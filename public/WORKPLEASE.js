@@ -226,7 +226,7 @@ function init(e) {
       case "id":
         idset = info.payload;
         console.log(idset);
-        //draw(gameState);
+        draw(gameState);
         break;
       case "stateInfo":
         let gameOfState = info.payload;
