@@ -78,10 +78,12 @@ wss.on("connection", (ws, client) => {
       game = setInterval(sendInfo,1000);
       i++;
       }
-});
+    });
 
   ws.on("close", () => {
     console.log("Client disconnected\n");
+    if(ws.id % 2 === 0) idset = 2;
+    else idset = 1;
   });
 
   

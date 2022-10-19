@@ -173,6 +173,37 @@ function init(e) {
      if(state.player1.newHead.x < 0 || state.player1.newHead.x > 19 || state.player1.newHead.y < 0 || state.player1.newHead.y > 19 || state.player2.newHead.x < 0 || state.player2.newHead.x > 19 || state.player2.newHead.y < 0 || state.player2.newHead.y > 19 || collisionSelf(state.player1.newHead,state.player1.snake) || collisionPlayer(state.player1.newHead,state.player2.snake) || collisionPlayer(state.player2.newHead,state.player1.snake) || collisionSelf(state.player2.newHead,state.player2.snake)){
         
        websocket.send(JSON.stringify({ type: "end"}));
+       gameState = {
+        player1: {
+          newHead:  {
+            x : 3,
+            y : 10,
+          },
+          d: "RIGHT",
+          snake: [
+            {x: 3, y: 10},
+            {x: 2, y: 10},
+            {x: 1, y: 10},
+          ],
+        },
+        player2: {
+          newHead:  {
+            x : 15,
+            y : 5,
+          },
+          d: "DOWN",
+          snake: [
+            {x: 15, y: 5},
+            {x: 15, y: 4},
+            {x: 15, y: 3},
+          ],
+        },
+        food: {
+          x: 1,
+          y: 1
+        },
+      };
+     // gameOfState = gameState;
      }
     ctx.reset();
     //console.log(gameState.player.newHead.x);
