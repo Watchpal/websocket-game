@@ -9,3 +9,5 @@ Right now the Game has only players, colission, food
 Link to the Game: https://websocket-snake-game.onrender.com
 
 Refresh one page to start again
+
+I am not sure its stable with more than 2 visitors 
