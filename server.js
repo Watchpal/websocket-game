@@ -75,7 +75,7 @@ wss.on("connection", (ws, client) => {
     client.send(JSON.stringify({ type: "id", payload: client.id }));
 
     if(wss.clients.size % 2 === 0 && wss.clients.size != 0 && i === 1) {
-      game = setInterval(sendInfo,1000);
+      game = setInterval(sendInfo,300);
       i++;
       }
     });
